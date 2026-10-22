@@ -1,0 +1,41 @@
+{
+  "student_hash": "d9ad998e15a3197c581a9f96f729274b56c25414bec4eed9cd45d420a8d3bc8c",
+  "last_updated": "2026-10-22T23:48:08.562745+00:00",
+  "course": "IV",
+  "base": 1.0,
+  "earned": 1.5,
+  "spent": 1.0,
+  "balance": 1.5,
+  "transactions": [
+    {
+      "date": "2026-11-09",
+      "type": "BASE",
+      "delta": 1.0,
+      "reason": "Starting allocation"
+    },
+    {
+      "date": "2026-11-19",
+      "type": "EARNED",
+      "delta": 0.5,
+      "reason": "Wooclap L2"
+    },
+    {
+      "date": "2026-11-26",
+      "type": "EARNED",
+      "delta": 0.5,
+      "reason": "Wooclap L3"
+    },
+    {
+      "date": "2026-11-27",
+      "type": "SPENT",
+      "delta": -1.0,
+      "reason": "SO1 handed in 20 h late"
+    },
+    {
+      "date": "2026-12-03",
+      "type": "EARNED",
+      "delta": 0.5,
+      "reason": "Wooclap L4"
+    }
+  ]
+}

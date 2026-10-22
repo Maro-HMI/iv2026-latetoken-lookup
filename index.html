@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>IV 2026 Token Lookup</title>
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <link rel="icon" type="image/png" sizes="32x32" href="favicon.png">
+  <link rel="alternate icon" type="image/x-icon" href="favicon.ico">
+  <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://api.fontshare.com">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://api.fontshare.com/v2/css?f[]=general-sans@400,500,600,700&display=swap">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body class="bg-slate-50 text-slate-900 min-h-screen flex flex-col selection:bg-blue-100 selection:text-blue-900">
+
+  <!-- Navigation Bar -->
+  <header class="border-b border-slate-200 bg-white/90 backdrop-blur-md sticky top-0 z-20">
+    <div class="max-w-6xl mx-auto px-4 py-2.5 sm:py-3 sm:px-6 flex items-center justify-between gap-3 sm:gap-4">
+      <div class="flex items-center gap-2.5 sm:gap-3 min-w-0">
+        <svg class="w-5 h-5 text-blue-600 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M2 9a3 3 0 0 1 0 6v2a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-2a3 3 0 0 1 0-6V7a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2Z"/>
+          <path d="M13 5v2"/>
+          <path d="M13 17v2"/>
+          <path d="M13 11v2"/>
+        </svg>
+        <div class="flex items-center gap-2 min-w-0">
+          <h1 class="font-heading font-semibold text-sm sm:text-base text-slate-900 tracking-tight truncate">IV 2026 Token Lookup</h1>
+          <span class="text-[10px] sm:text-[11px] font-medium px-2 py-0.5 bg-slate-100 border border-slate-200 rounded-md text-slate-600 whitespace-nowrap shrink-0 hidden min-[480px]:inline-block">VU &amp; UT</span>
+        </div>
+      </div>
+      <span id="lastUpdated" class="text-xs text-slate-500 font-medium whitespace-nowrap shrink-0 hidden sm:inline"></span>
+    </div>
+  </header>
+
+  <!-- Main Container -->
+  <main class="max-w-3xl mx-auto px-4 py-6 sm:py-8 sm:px-6 flex-grow w-full">
+
+    <!-- Hero / Title -->
+    <div class="text-center max-w-xl mx-auto mb-6 sm:mb-8">
+      <h2 class="font-heading text-2xl sm:text-3xl font-bold text-slate-900 tracking-tight mb-2">Check Late Token Balance</h2>
+      <p class="text-slate-500 text-xs sm:text-sm leading-relaxed [text-wrap:balance]">
+        Look up your late tokens, Wooclap credits and token use for Interactive Visualization.
+      </p>
+    </div>
+
+    <!-- Search Form -->
+    <div class="max-w-md mx-auto mb-6 sm:mb-8">
+      <form id="tokenForm" class="relative" novalidate>
+        <div class="flex items-center bg-white border border-slate-300 rounded-lg p-1 focus-within:border-blue-600 focus-within:ring-2 focus-within:ring-blue-500/20 transition">
+          <span class="pl-3 pr-1.5 text-slate-400 font-mono text-xs font-semibold select-none shrink-0">ID:</span>
+          <input
+            type="text"
+            id="studentIdInput"
+            placeholder="Enter student number..."
+            autocomplete="off"
+            spellcheck="false"
+            inputmode="text"
+            enterkeyhint="search"
+            autocapitalize="none"
+            autocorrect="off"
+            aria-label="Student number"
+            class="bg-transparent text-slate-900 font-mono placeholder:text-slate-400 placeholder:italic placeholder:font-sans focus:outline-none flex-grow text-base sm:text-sm px-2 py-1.5 min-w-0"
+          />
+          <button
+            type="submit"
+            id="submitBtn"
+            class="bg-blue-600 hover:bg-blue-700 text-white font-medium text-xs px-3.5 sm:px-4 py-2 rounded-md transition duration-150 flex items-center space-x-1.5 shrink-0 disabled:opacity-50">
+            <span>Check</span>
+            <svg id="searchIcon" class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+            </svg>
+            <div id="loadingSpinner" class="hidden w-3.5 h-3.5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+          </button>
+        </div>
+        <p class="text-[11px] text-slate-500 mt-1.5 px-1.5">UT: s1234567 or 1234567. VU: your VU student number. Lookups can be bookmarked.</p>
+      </form>
+
+      <!-- Status Alert Box -->
+      <div id="alertBox" class="hidden mt-3 p-3.5 rounded-lg text-xs font-medium border" role="alert"></div>
+    </div>
+
+    <!-- Results Container -->
+    <div id="resultsContainer" class="hidden max-w-xl mx-auto space-y-4 animate-fade-in">
+
+      <!-- Student Confirmation Header -->
+      <div class="flex items-center justify-between bg-blue-50/80 border border-blue-200 rounded-lg px-3.5 sm:px-4 py-2.5 text-xs text-blue-900">
+        <div class="flex items-center space-x-2 min-w-0">
+          <span class="font-medium text-slate-600 shrink-0">Student record:</span>
+          <span id="displayStudentId" class="font-mono font-bold text-blue-700 bg-white border border-blue-200 px-2 py-0.5 rounded truncate"></span>
+        </div>
+        <button type="button" id="clearSearchBtn" class="text-xs text-blue-600 hover:text-blue-800 font-medium transition underline underline-offset-2 shrink-0 py-1 px-1.5 -mr-1 rounded hover:bg-blue-100/60">Look up another ID</button>
+      </div>
+
+      <!-- Bookmark Tip -->
+      <div class="bg-amber-50/70 border border-amber-200/80 rounded-lg px-3.5 py-2.5 text-xs text-amber-900 flex items-center space-x-2">
+        <svg class="w-4 h-4 text-amber-600 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16z"/>
+        </svg>
+        <span><strong>Bookmark your balance:</strong> Save this URL <span class="hidden sm:inline">(or press <kbd class="px-1.5 py-0.5 font-mono text-[10px] bg-white border border-amber-300 rounded text-amber-900">Cmd/Ctrl + D</kbd>)</span> to check anytime.</span>
+      </div>
+
+      <!-- IV Course Card -->
+      <div id="courseCard" class="bg-white border border-slate-200 rounded-xl p-4 sm:p-5">
+        <div class="flex items-center justify-between pb-3.5 mb-3.5 border-b border-slate-100 gap-2">
+          <div class="flex items-center space-x-2.5 min-w-0">
+            <div class="w-7 h-7 rounded-md bg-blue-600 text-white flex items-center justify-center shrink-0" aria-hidden="true">
+              <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
+                <path d="m3.3 7 8.7 5 8.7-5"/>
+                <path d="M12 22V12"/>
+              </svg>
+            </div>
+            <div class="min-w-0">
+              <h3 class="font-heading font-semibold text-slate-900 text-sm leading-tight">IV</h3>
+              <p class="text-[11px] text-slate-500 truncate">Interactive Visualization</p>
+            </div>
+          </div>
+          <span class="text-[11px] px-2.5 py-0.5 rounded-full font-medium bg-slate-100 text-slate-700 border border-slate-200 shrink-0">Enrolled</span>
+        </div>
+
+        <!-- Balance -->
+        <div class="bg-slate-50/80 border border-slate-200/80 rounded-lg p-4 mb-4 text-center">
+          <span class="text-[10px] font-semibold text-slate-500 uppercase tracking-wider block mb-1">Available Late Tokens</span>
+          <span id="balance" class="text-3xl font-extrabold text-slate-900 font-mono inline-block">0.0</span>
+        </div>
+
+        <!-- Stats Breakdown -->
+        <div class="grid grid-cols-3 gap-2 text-center text-xs mb-4">
+          <div class="bg-white border border-slate-200 rounded-md p-2">
+            <span class="text-[10px] text-slate-400 block font-medium">Base</span>
+            <span id="base" class="font-mono font-bold text-slate-700">1.0</span>
+          </div>
+          <div class="bg-white border border-slate-200 rounded-md p-2">
+            <span class="text-[10px] text-emerald-600 block font-medium">Earned</span>
+            <span id="earned" class="font-mono font-bold text-emerald-700">+0.0</span>
+          </div>
+          <div class="bg-white border border-slate-200 rounded-md p-2">
+            <span class="text-[10px] text-rose-600 block font-medium">Spent</span>
+            <span id="spent" class="font-mono font-bold text-rose-700">-0.0</span>
+          </div>
+        </div>
+
+        <!-- Transaction Ledger -->
+        <div class="mt-2 pt-3 border-t border-slate-100">
+          <h4 class="text-[11px] font-semibold text-slate-600 uppercase tracking-wider mb-2 flex items-center justify-between">
+            <span>Activity History</span>
+            <span class="text-[10px] text-slate-400 normal-case font-normal">(Newest first)</span>
+          </h4>
+          <div id="ledger" class="space-y-1 max-h-64 overflow-y-auto pr-1 text-xs font-mono scrollbar-thin"></div>
+        </div>
+      </div>
+
+      <!-- Policy Info -->
+      <div class="bg-white border border-slate-200 rounded-xl p-4 text-xs text-slate-600">
+        <h4 class="font-heading font-semibold text-slate-900 text-xs flex items-center space-x-1.5 mb-2.5">
+          <svg class="w-4 h-4 text-slate-700 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/>
+            <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>
+          </svg>
+          <span>Late Token Rules</span>
+        </h4>
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+          <div class="bg-slate-50 p-2.5 rounded-lg border border-slate-200/80">
+            <span class="font-semibold text-slate-800 flex items-center space-x-1.5 mb-1">
+              <svg class="w-3.5 h-3.5 text-blue-600 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+              <span>+24 h per token</span>
+            </span>
+            For SO1–SO4 and A1, not A2. Every started 24 h costs one whole token, used automatically. If your tokens don't cover the whole delay, none are used.
+          </div>
+          <div class="bg-slate-50 p-2.5 rounded-lg border border-slate-200/80">
+            <span class="font-semibold text-slate-800 flex items-center space-x-1.5 mb-1">
+              <svg class="w-3.5 h-3.5 text-emerald-600 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M8 12h8"/><path d="M12 8v8"/></svg>
+              <span>Earn tokens</span>
+            </span>
+            You start with 1 token. Earn +0.5 for each Wooclap at the start of lectures L2 to L9 (up to +4).
+          </div>
+          <div class="bg-slate-50 p-2.5 rounded-lg border border-slate-200/80">
+            <span class="font-semibold text-slate-800 flex items-center space-x-1.5 mb-1">
+              <svg class="w-3.5 h-3.5 text-amber-600 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/></svg>
+              <span>Grade bonus</span>
+            </span>
+            Each whole token left at the end of the course adds +0.1 to your final grade. Half tokens don't count.
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="border-t border-slate-200 bg-white py-6 px-4 text-center text-xs text-slate-500 pb-[max(1.5rem,env(safe-area-inset-bottom))]">
+    <p class="font-medium text-slate-600">Interactive Visualization 2026 · VU Amsterdam &amp; University of Twente</p>
+    <p class="mt-1 text-[11px] text-slate-400">Zero database · Resolved client-side via SHA-256 hash · No personal data stored online</p>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>

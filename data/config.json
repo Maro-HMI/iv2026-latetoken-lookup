@@ -1,0 +1,9 @@
+{
+  "salt": "iv_2026_late_tokens_salt",
+  "last_updated": "2026-10-22T23:48:08.562745+00:00",
+  "course": "IV",
+  "cohorts": [
+    "VU",
+    "UT"
+  ]
+}
