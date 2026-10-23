@@ -6,7 +6,7 @@ const PAGE_TITLE = 'IV 2026 Token Lookup';
 
 let appConfig = null;
 
-// Canonical key, same as build.py: UT numbers lose the leading 's', VU numbers stay as they are
+// Canonical key, same as build.py: the leading 's' is dropped (all students share one number format)
 function normalizeStudentId(input) {
   if (!input) return '';
   return input.trim().toLowerCase().replace(/^s\s*(?=\d)/, '');
