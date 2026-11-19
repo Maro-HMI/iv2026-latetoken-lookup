@@ -1,0 +1,17 @@
+{
+  "student_hash": "b4879598f8ee6fd5b4659a9dcbc101cba8e86aa4f7421ff0e997b2c6cfdf25ca",
+  "last_updated": "2026-11-17T19:17:30.771413+00:00",
+  "course": "IV",
+  "base": 1.0,
+  "earned": 0.0,
+  "spent": 0.0,
+  "balance": 1.0,
+  "transactions": [
+    {
+      "date": "2026-11-09",
+      "type": "BASE",
+      "delta": 1.0,
+      "reason": "Starting allocation"
+    }
+  ]
+}
