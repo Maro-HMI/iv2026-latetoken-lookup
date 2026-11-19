@@ -1,17 +1,23 @@
 {
   "student_hash": "8586a7e99c8cae59234f996024e50d8fbb2e83e35470e8c295912766e84ad27a",
-  "last_updated": "2026-11-17T19:17:30.771413+00:00",
+  "last_updated": "2026-11-19T17:13:27.231399+00:00",
   "course": "IV",
   "base": 1.0,
-  "earned": 0.0,
+  "earned": 0.5,
   "spent": 0.0,
-  "balance": 1.0,
+  "balance": 1.5,
   "transactions": [
     {
       "date": "2026-11-09",
       "type": "BASE",
       "delta": 1.0,
       "reason": "Starting allocation"
+    },
+    {
+      "date": "2026-11-19",
+      "type": "EARNED",
+      "delta": 0.5,
+      "reason": "Wooclap L2"
     }
   ]
 }
