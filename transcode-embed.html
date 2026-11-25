@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Convert Godot Movie Maker recordings to MP4 in your browser.">
+  <title>IV 2026 · Transcoding</title>
+  <link rel="icon" type="image/svg+xml" href="./favicon.svg">
+  <style>
+    
+    * { box-sizing: border-box; }
+    body { margin: 0; color: #0f172a; background: #f8fafc; font: 14px/1.5 system-ui, sans-serif; }
+    main { max-width: 38rem; margin-inline: auto; padding: 2rem 1rem; }
+    h1 { margin: 0 0 .4rem; text-align: center; font-size: clamp(1.5rem, 5vw, 1.875rem); letter-spacing: -.025em; }
+    .intro { margin: 0 0 1.5rem; color: #475569; text-align: center; text-wrap: balance; }
+    .panel { padding: clamp(1rem, 4vw, 1.5rem); border: 1px solid #e2e8f0; border-radius: 12px; background: white; }
+    .hint { margin: .5rem 0 0; color: #475569; font-size: .8125rem; }
+    .status { margin: 0; color: #475569; font-size: .875rem; }
+    .status:not(:empty) { margin-top: .75rem; }
+    .status[data-error] { color: #b91c1c; }
+    label { display: block; margin-bottom: .375rem; font-weight: 600; }
+    input[type=file] { display: block; width: 100%; padding: .5rem; border: 1px solid #cbd5e1; border-radius: 8px; font: inherit; }
+    input::file-selector-button { margin-inline-end: .625rem; padding: .375rem .625rem; border: 0; border-radius: 5px; background: #eff6ff; color: #1e40af; font: inherit; cursor: pointer; }
+    button, .download { display: inline-block; padding: .5rem .85rem; border: 0; border-radius: 6px; color: white; background: #2563eb; font: 600 .875rem/1.5 system-ui, sans-serif; text-decoration: none; cursor: pointer; }
+    button:hover:not(:disabled), .download:hover { background: #1d4ed8; }
+    button:disabled { opacity: .55; cursor: default; }
+    :focus-visible { outline: 2px solid #2563eb; outline-offset: 3px; }
+    .convert { margin-top: .875rem; }
+    progress { display: block; width: 100%; margin-top: .75rem; accent-color: #2563eb; }
+    .download { margin-top: .75rem; }
+    [hidden] { display: none !important; }
+  </style>
+  <script type="module" src="./transcoding.js"></script>
+</head>
+<body>
+  
+  <main>
+    <h1>Convert video to MP4</h1>
+    <p class="intro">Convert a Godot Movie Maker recording for Canvas. The video stays on your device.</p>
+    <section class="panel" aria-label="Video converter">
+      <div id="setup">
+        <button id="initialize" type="button" aria-describedby="setup-hint">Initialize encoder</button>
+        <p id="setup-hint" class="hint">Downloads about 32 MB. You only need to initialize once per page visit.</p>
+      </div>
+      <form id="transcode" hidden>
+        <label for="video-file">Video file</label>
+        <input id="video-file" type="file" accept="video/*,.avi,.mkv,.mov,.webm,.mp4" required aria-describedby="file-hint">
+        <p id="file-hint" class="hint">For SO3, choose <code>SO3_recording.avi</code> from your <code>captures</code> folder.</p>
+        <button id="convert" class="convert" type="submit" disabled>Convert to MP4</button>
+      </form>
+      <p id="status" class="status" role="status"></p>
+      <progress id="progress" max="100" aria-label="Conversion progress" hidden></progress>
+      <a id="download" class="download" hidden>Download MP4</a>
+    </section>
+  </main>
+</body>
+</html>
