@@ -1,0 +1,25 @@
+{
+  "student_hash": "ba50a197c06c5b988ca1223b3347359bef38017f436b93917c210119b7ac6dcd",
+  "last_updated": "2026-11-25T21:36:27.240459+00:00",
+  "course": "IV",
+  "base": 1.0,
+  "earned": 0.0,
+  "spent": 1.0,
+  "balance": 0.0,
+  "transactions": [
+    {
+      "date": "2026-11-09",
+      "type": "BASE",
+      "delta": 1.0,
+      "reason": "Starting allocation"
+    },
+    {
+      "date": "2026-11-23",
+      "type": "SPENT",
+      "delta": -1.0,
+      "reason": "SO1 25.1 h late",
+      "needed": 2.0,
+      "note": "Needed 2, had 1: no bonus"
+    }
+  ]
+}
