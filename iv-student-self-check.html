@@ -181,14 +181,13 @@ input[type=checkbox] { accent-color: var(--blue); }
   border-radius: 6px; background: #2563eb; color: white;
   font: 700 12px/1 ui-monospace, Menlo, monospace;
 }
-.iv-tool-tabs { display: flex; align-self: stretch; gap: 3px; }
+.iv-tool-tabs { display: flex; align-self: stretch; min-width: 0; gap: 3px; }
 .iv-tool-tabs .iv-tool-tab {
   box-sizing: border-box; display: flex; align-items: center; justify-content: center;
-  width: 112px; min-height: 45px; padding-inline: 6px; border-bottom: 2px solid transparent;
-  color: #475569; text-align: center; text-decoration: none; white-space: nowrap;
+  min-width: 0; min-height: 45px; padding-inline: 14px; border-bottom: 2px solid transparent;
+  color: #475569; text-align: center; text-decoration: none;
   font: 600 13px/1.25 system-ui, sans-serif;
 }
-.iv-tool-tabs .iv-tool-tab:last-child { width: 161px; }
 .iv-tool-tabs .iv-tool-tab:hover { color: #1e40af; background: #f8fafc; }
 .iv-tool-tabs .iv-tool-tab[aria-current="page"] { border-bottom-color: #2563eb; color: #1d4ed8; }
 .iv-tool-tabs .iv-tool-tab:focus-visible { outline: 2px solid #2563eb; outline-offset: -4px; border-radius: 4px; }
@@ -197,8 +196,7 @@ input[type=checkbox] { accent-color: var(--blue); }
 }
 @media (max-width: 639px) {
   .iv-tool-header-inner { padding-inline: 12px; gap: 7px; }
-  .iv-tool-tabs .iv-tool-tab { width: 95px; font-size: 12px; }
-  .iv-tool-tabs .iv-tool-tab:last-child { width: 144px; }
+  .iv-tool-tabs .iv-tool-tab { padding-inline: 6px; font-size: 12px; }
   .iv-tool-updated { display: none; }
 }
 </style>
@@ -210,6 +208,7 @@ input[type=checkbox] { accent-color: var(--blue); }
     <nav class="iv-tool-tabs" aria-label="IV tools">
       <a class="iv-tool-tab" href="https://maro-hmi.github.io/iv2026-latetoken-lookup/">Token Lookup</a>
       <a class="iv-tool-tab" href="#" aria-current="page">Submission Self Check</a>
+      <a class="iv-tool-tab" href="https://maro-hmi.github.io/iv2026-latetoken-lookup/transcoding.html">Transcoding</a>
     </nav>
   </div>
 </header>
