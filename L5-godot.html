@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="robots" content="noindex">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="color-scheme" content="light dark">
+  <title>L5 Interactive Godot 4.7 Demo | Interactive Visualization</title>
+  <style>
+    :root {
+      color-scheme: light dark;
+
+      --bg-light: #eef3f5;
+      --bg-dark: #10151c;
+      --surface-light: rgba(255, 255, 255, 0.92);
+      --surface-dark: rgba(18, 24, 34, 0.9);
+      --text-light: #16202a;
+      --text-dark: #f2f5f8;
+      --muted-light: #475569;
+      --muted-dark: #b6c2d1;
+      --border-light: rgba(22, 32, 42, 0.14);
+      --border-dark: rgba(255, 255, 255, 0.16);
+      --accent-light: #2b6cb0;
+      --accent-dark: #58a6ff;
+      --accent-text-light: #ffffff;
+      --accent-text-dark: #09131f;
+      --focus-light: #d9385a;
+      --focus-dark: #ff6b8b;
+      --alert-bg-light: #fef2f2;
+      --alert-bg-dark: #3b171b;
+      --alert-text-light: #7f1d1d;
+      --alert-text-dark: #fecaca;
+
+      --bg: var(--bg-light);
+      --surface: var(--surface-light);
+      --text: var(--text-light);
+      --muted: var(--muted-light);
+      --border: var(--border-light);
+      --accent: var(--accent-light);
+      --accent-text: var(--accent-text-light);
+      --focus: var(--focus-light);
+      --alert-bg: var(--alert-bg-light);
+      --alert-text: var(--alert-text-light);
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: var(--bg-dark);
+        --surface: var(--surface-dark);
+        --text: var(--text-dark);
+        --muted: var(--muted-dark);
+        --border: var(--border-dark);
+        --accent: var(--accent-dark);
+        --accent-text: var(--accent-text-dark);
+        --focus: var(--focus-dark);
+        --alert-bg: var(--alert-bg-dark);
+        --alert-text: var(--alert-text-dark);
+      }
+    }
+
+    @supports (color: light-dark(white, black)) {
+      :root {
+        --bg: light-dark(var(--bg-light), var(--bg-dark));
+        --surface: light-dark(var(--surface-light), var(--surface-dark));
+        --text: light-dark(var(--text-light), var(--text-dark));
+        --muted: light-dark(var(--muted-light), var(--muted-dark));
+        --border: light-dark(var(--border-light), var(--border-dark));
+        --accent: light-dark(var(--accent-light), var(--accent-dark));
+        --accent-text: light-dark(var(--accent-text-light), var(--accent-text-dark));
+        --focus: light-dark(var(--focus-light), var(--focus-dark));
+        --alert-bg: light-dark(var(--alert-bg-light), var(--alert-bg-dark));
+        --alert-text: light-dark(var(--alert-text-light), var(--alert-text-dark));
+      }
+    }
+
+    html[data-theme="light"] {
+      color-scheme: light;
+    }
+
+    html[data-theme="dark"] {
+      color-scheme: dark;
+    }
+
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      margin: 0;
+      padding: 0;
+      min-block-size: 100dvh;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+    }
+
+    main {
+      position: relative;
+      display: grid;
+      place-items: center;
+      inline-size: 100%;
+      min-block-size: 100dvh;
+      overflow: hidden;
+    }
+
+    .poster-layer {
+      position: absolute;
+      inset: 0;
+    }
+
+    .poster-layer img {
+      display: block;
+      inline-size: 100%;
+      block-size: 100%;
+      object-fit: cover;
+    }
+
+    .poster-scrim {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, rgba(16, 21, 28, 0.2) 0%, rgba(16, 21, 28, 0.56) 100%);
+    }
+
+    .launch-card {
+      position: relative;
+      z-index: 1;
+      max-inline-size: 32rem;
+      margin: 1rem;
+      padding: 1.35rem 1.5rem;
+      border-radius: 0.875rem;
+      border: 1px solid var(--border);
+      background-color: var(--surface);
+      backdrop-filter: blur(10px);
+      text-align: center;
+      box-shadow: 0 18px 42px rgba(0, 0, 0, 0.24);
+    }
+
+    h1 {
+      margin: 0 0 0.5rem;
+      font-size: clamp(1.15rem, 2.5vw, 1.4rem);
+      line-height: 1.25;
+    }
+
+    .subtitle {
+      margin: 0 0 1rem;
+      font-size: 0.95rem;
+      line-height: 1.45;
+      color: var(--muted);
+    }
+
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.6rem;
+      justify-content: center;
+    }
+
+    button,
+    .link-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      min-block-size: 44px;
+      min-inline-size: 44px;
+      padding: 0.6rem 1.1rem;
+      border-radius: 0.6rem;
+      border: 1px solid transparent;
+      font: inherit;
+      font-weight: 600;
+      font-size: 0.95rem;
+      text-decoration: none;
+      cursor: pointer;
+    }
+
+    .btn-primary {
+      background-color: var(--accent);
+      color: var(--accent-text);
+    }
+
+    .btn-secondary {
+      background-color: var(--surface);
+      color: var(--text);
+      border-color: var(--border);
+    }
+
+    :where(a:any-link, button):focus-visible {
+      outline: 3px solid var(--focus);
+      outline-offset: 3px;
+    }
+
+    .stage {
+      position: relative;
+      inline-size: 100%;
+      block-size: 100dvh;
+      display: grid;
+      grid-template-rows: auto 1fr;
+    }
+
+    .stage[hidden],
+    .launch-card[hidden],
+    .poster-layer[hidden],
+    .alert-box[hidden] {
+      display: none;
+    }
+
+    .toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.5rem;
+      padding: 0.45rem 0.75rem;
+      background-color: var(--surface);
+      border-bottom: 1px solid var(--border);
+      font-size: 0.875rem;
+    }
+
+    .toolbar-title {
+      font-weight: 600;
+    }
+
+    .toolbar-actions {
+      display: flex;
+      gap: 0.5rem;
+    }
+
+    .toolbar button,
+    .toolbar .link-btn {
+      min-block-size: 36px;
+      padding: 0.35rem 0.75rem;
+      font-size: 0.85rem;
+    }
+
+    #frame-mount {
+      inline-size: 100%;
+      block-size: 100%;
+      min-block-size: 0;
+    }
+
+    iframe {
+      display: block;
+      inline-size: 100%;
+      block-size: 100%;
+      border: 0;
+      background-color: #10151c;
+    }
+
+    .alert-box {
+      margin-top: 1rem;
+      padding: 0.75rem 0.9rem;
+      border-radius: 0.6rem;
+      border: 1px solid var(--border);
+      background-color: var(--alert-bg);
+      color: var(--alert-text);
+      text-align: left;
+      font-size: 0.875rem;
+      line-height: 1.45;
+    }
+
+    .alert-box code {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: 0.82rem;
+    }
+  </style>
+  <script>
+    (function () {
+      var params = new URLSearchParams(window.location.search);
+      var theme = params.get("theme");
+      if (theme === "light" || theme === "dark") {
+        document.documentElement.setAttribute("data-theme", theme);
+      }
+    })();
+  </script>
+</head>
+<body>
+  <main>
+    <div id="poster-layer" class="poster-layer">
+      <img
+        src="./l5-godot/preview.png"
+        alt="Godot 4.7 L5 demo preview showing a terracotta cube above a floor and two stone lanterns"
+        width="1200"
+        height="750"
+        fetchpriority="high"
+      >
+      <div class="poster-scrim" aria-hidden="true"></div>
+    </div>
+
+    <section id="launch-card" class="launch-card" aria-labelledby="demo-heading">
+      <h1 id="demo-heading">Interactive Godot 4.7 Demo</h1>
+      <p class="subtitle">
+        Spawn cubes, toggle the floor collider, inspect collision wireframes, test bouncy materials, and sweep the sun angle.
+      </p>
+      <div class="actions">
+        <button id="launch-btn" type="button" class="btn-primary">
+          <svg aria-hidden="true" width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+            <path d="M4 2.5v11l9-5.5-9-5.5z"/>
+          </svg>
+          Start 3D Demo
+        </button>
+        <a id="direct-link" class="link-btn btn-secondary" href="./l5-godot/game/index.html" target="_blank" rel="noopener">
+          Open Fullscreen
+        </a>
+      </div>
+      <div id="missing-alert" class="alert-box" role="alert" hidden>
+        The Godot Web export is not in <code>./l5-godot/game/index.html</code> yet. Export the <strong>Web (Notion Embed)</strong> preset from <code>godot/project.godot</code> into <code>site/game/index.html</code>, then reload.
+      </div>
+    </section>
+
+    <section id="stage" class="stage" aria-label="Running Godot 3D Demo" hidden>
+      <div class="toolbar">
+        <span class="toolbar-title">L5 Interactive Demo (Godot 4.7 Compatibility)</span>
+        <div class="toolbar-actions">
+          <button id="reload-btn" type="button" class="btn-secondary">Reload</button>
+          <a class="link-btn btn-secondary" href="./l5-godot/game/index.html" target="_blank" rel="noopener">Open in New Tab</a>
+        </div>
+      </div>
+      <div id="frame-mount"></div>
+    </section>
+  </main>
+
+  <script>
+    (function () {
+      var GAME_URL = "./l5-godot/game/index.html";
+      var launchBtn = document.getElementById("launch-btn");
+      var launchCard = document.getElementById("launch-card");
+      var posterLayer = document.getElementById("poster-layer");
+      var stage = document.getElementById("stage");
+      var frameMount = document.getElementById("frame-mount");
+      var reloadBtn = document.getElementById("reload-btn");
+      var missingAlert = document.getElementById("missing-alert");
+
+      function mountIframe() {
+        missingAlert.hidden = true;
+        posterLayer.hidden = true;
+        launchCard.hidden = true;
+        stage.hidden = false;
+
+        frameMount.textContent = "";
+        var iframe = document.createElement("iframe");
+        iframe.src = GAME_URL;
+        iframe.title = "Interactive Godot 4.7 L5 3D Demo";
+        iframe.allow = "autoplay; fullscreen";
+        frameMount.appendChild(iframe);
+      }
+
+      function startDemo() {
+        if (window.location.protocol === "file:") {
+          mountIframe();
+          return;
+        }
+        launchBtn.disabled = true;
+        fetch(GAME_URL, { method: "HEAD" })
+          .then(function (res) {
+            if (res.ok || res.status === 405) {
+              mountIframe();
+            } else {
+              missingAlert.hidden = false;
+              launchBtn.disabled = false;
+            }
+          })
+          .catch(function () {
+            mountIframe();
+          });
+      }
+
+      launchBtn.addEventListener("click", startDemo);
+      reloadBtn.addEventListener("click", mountIframe);
+
+      var params = new URLSearchParams(window.location.search);
+      if (params.get("autostart") === "1") {
+        startDemo();
+      }
+    })();
+  </script>
+</body>
+</html>
